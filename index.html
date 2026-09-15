@@ -1,6 +1,143 @@
 <!doctype html>
-<html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Last Zone AI Trader</title><style>
-*{box-sizing:border-box}body{margin:0;background:#08101e;color:#eef4ff;font-family:Arial,sans-serif}.wrap{max-width:1050px;margin:auto;padding:25px}.head,.row{display:flex;justify-content:space-between;gap:16px;align-items:center}.brand{font-weight:800;letter-spacing:1px}.sub{color:#91a1bc;font-size:13px;margin-top:5px}.live{background:#0c3126;color:#72e9ae;border-radius:20px;padding:8px 12px;font-size:12px}.grid{display:grid;grid-template-columns:1.3fr .7fr;gap:16px;margin-top:18px}.card{background:#111d30;border:1px solid #293b57;border-radius:15px;padding:19px}.hero{background:linear-gradient(135deg,#122d4f,#103323)}.label{font-size:11px;color:#9caec8;text-transform:uppercase;letter-spacing:1px}.signal{font-size:39px;font-weight:800;color:#42dc91;margin:9px 0}.reason{color:#c4d1e5;line-height:1.5}.values,.tf,.checks{display:grid;gap:9px}.values{grid-template-columns:repeat(4,1fr);margin-top:21px}.value,.box{background:#0a1424;border:1px solid #2a3e5d;border-radius:9px;padding:11px}.value b{display:block;margin-top:5px}.green{color:#42dc91}.score{text-align:center}.score b{font-size:52px;color:#42dc91;display:block;margin:30px 0 3px}.wide{grid-column:1/-1}.tf{grid-template-columns:repeat(6,1fr)}.checks{grid-template-columns:repeat(3,1fr)}button{background:#24528a;color:#fff;border:0;border-radius:8px;padding:9px 12px;cursor:pointer}@media(max-width:700px){.grid{grid-template-columns:1fr}.values,.tf{grid-template-columns:repeat(2,1fr)}.checks{grid-template-columns:1fr}.wide{grid-column:auto}.signal{font-size:31px}}
-</style></head><body><main class="wrap"><header class="head"><div><div class="brand">LAST ZONE AI TRADER</div><div class="sub">XAUUSD · AI signal dashboard · V1 demo</div></div><div><span class="live">● DEMO DATA</span> <button onclick="next()">Refresh analisis</button></div></header><section class="grid"><article class="card hero"><div class="label">Keputusan AI sekarang</div><div class="signal" id="signal">STRONG BUY</div><div class="reason" id="reason">Trend H1 dan H4 bullish. M15 menunjukkan liquidity sweep, kemudian M5 membentuk bullish CHOCH dan Fair Value Gap.</div><div class="values"><div class="value"><div class="label">Entry</div><b id="entry">2,487.20</b></div><div class="value"><div class="label">SL</div><b id="sl">2,480.60</b></div><div class="value"><div class="label">TP1</div><b class="green" id="tp1">2,496.00</b></div><div class="value"><div class="label">TP2</div><b class="green" id="tp2">2,503.40</b></div></div></article><article class="card score"><div class="label">Signal quality</div><b id="score">87</b><div>/ 100 · High confidence</div></article><article class="card wide"><div class="label">Multi-timeframe bias</div><div class="tf" id="tf" style="margin-top:12px"></div></article><article class="card"><div class="label">AI confluence</div><div class="checks" id="checks" style="margin-top:12px"></div></article><article class="card"><div class="label">Status</div><p class="reason">Ini prototaip data simulasi. Versi sebenar akan menggantikan data ini dengan candle XAUUSD daripada sumber data yang dibenarkan.</p></article></section></main><script>
-const all=[{s:'STRONG BUY',c:'#42dc91',n:87,e:'2,487.20',sl:'2,480.60',a:'2,496.00',b:'2,503.40',r:'Trend H1 dan H4 bullish. M15 menunjukkan liquidity sweep, kemudian M5 membentuk bullish CHOCH dan Fair Value Gap.',t:['Bullish','Bullish','Bullish','Bullish','Bullish','Neutral']},{s:'NO TRADE',c:'#ffbf69',n:58,e:'2,485.80',sl:'—',a:'—',b:'—',r:'Timeframe bercampur dan harga berada di tengah range. AI menunggu sweep atau breakout yang disahkan.',t:['Bullish','Neutral','Bearish','Neutral','Neutral','Neutral']},{s:'SELL',c:'#ff6577',n:76,e:'2,491.40',sl:'2,498.20',a:'2,482.40',b:'2,474.60',r:'Harga menolak supply H1 dan menyapu buy-side liquidity. M5 membentuk bearish CHOCH.',t:['Bearish','Bearish','Bearish','Bearish','Neutral','Neutral']}];let i=0;function next(){i=(i+1)%all.length;draw()}function draw(){let x=all[i];signal.textContent=x.s;signal.style.color=x.c;score.textContent=x.n;score.style.color=x.c;reason.textContent=x.r;entry.textContent=x.e;sl.textContent=x.sl;tp1.textContent=x.a;tp2.textContent=x.b;tf.innerHTML=['H4','H1','M30','M15','M5','M1'].map((z,j)=>'<div class="box"><div class="label">'+z+'</div><b style="color:'+(x.t[j]=='Bullish'?'#42dc91':x.t[j]=='Bearish'?'#ff6577':'#ffbf69')+'">'+x.t[j]+'</b></div>').join('');checks.innerHTML=['Trend alignment ✓','Liquidity ✓','BOS / CHOCH ✓','FVG / Order Block ✓','EMA / RSI ✓','ATR risk ✓'].map(z=>'<div class="box">'+z+'</div>').join('')}draw();
-</script></body></html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Last Zone AI Trader — XAUUSD</title>
+  <style>
+    :root {
+      --bg:#08101e; --card:#111d30; --line:#2a3e5d;
+      --text:#eef4ff; --muted:#99abc6; --green:#42dc91;
+      --amber:#ffbf69; --red:#ff6577; --blue:#4c96ee;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; min-height:100vh; color:var(--text);
+      font-family:Arial,sans-serif;
+      background:radial-gradient(circle at top left,#183259,#08101e 45%);
+    }
+    .wrap { max-width:1050px; margin:auto; padding:26px 18px 50px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    h1 { font-size:20px; letter-spacing:1px; margin:0; }
+    .sub { color:var(--muted); font-size:13px; margin-top:6px; }
+    button {
+      cursor:pointer; color:white; background:#24528a; border:0;
+      border-radius:8px; padding:10px 13px; font-weight:bold;
+    }
+    .grid { display:grid; grid-template-columns:1.3fr .7fr; gap:16px; margin-top:20px; }
+    .card {
+      background:rgba(17,29,48,.94); border:1px solid var(--line);
+      border-radius:15px; padding:19px;
+    }
+    .hero { background:linear-gradient(135deg,#123059,#103323); }
+    .label { color:var(--muted); font-size:11px; letter-spacing:1px; text-transform:uppercase; }
+    .price { font-size:43px; font-weight:800; color:var(--green); margin:11px 0 6px; }
+    .decision { font-size:27px; font-weight:800; color:var(--amber); margin:25px 0 7px; }
+    .reason { color:#c4d1e5; line-height:1.55; font-size:14px; }
+    .score { text-align:center; display:grid; place-content:center; min-height:235px; }
+    .score strong { display:block; font-size:48px; color:var(--amber); margin:10px; }
+    .wide { grid-column:1/-1; }
+    .checks { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px; }
+    .check { background:#0a1424; border:1px solid var(--line); padding:12px; border-radius:9px; font-size:13px; }
+    .check b { display:block; margin-top:5px; color:var(--muted); font-size:12px; }
+    .status { color:var(--green); font-size:12px; }
+    .error { color:var(--red); }
+    @media(max-width:700px) {
+      header,.grid { display:block; }
+      header button { margin-top:15px; }
+      .card { margin-top:14px; }
+      .wide { grid-column:auto; }
+      .checks { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div>
+        <h1>LAST ZONE AI TRADER</h1>
+        <div class="sub">XAUUSD · Live price dashboard · V1</div>
+      </div>
+      <button onclick="loadSignal()">Refresh harga</button>
+    </header>
+
+    <section class="grid">
+      <article class="card hero">
+        <div class="label">Harga XAUUSD terkini</div>
+        <div class="price" id="price">Memuatkan…</div>
+        <div class="status" id="updated">Menyambung ke market-data API…</div>
+
+        <div class="decision" id="decision">NO TRADE</div>
+        <div class="reason" id="message">
+          Menunggu data live untuk analisis.
+        </div>
+      </article>
+
+      <article class="card score">
+        <div class="label">Signal confidence</div>
+        <strong id="confidence">—</strong>
+        <div class="sub">Score akan aktif selepas engine candle dan trend ditambah.</div>
+      </article>
+
+      <article class="card wide">
+        <div class="label">Status engine</div>
+        <div class="checks">
+          <div class="check">Market data<b id="market">Menyambung…</b></div>
+          <div class="check">Candlestick patterns<b>Belum diaktifkan</b></div>
+          <div class="check">SMC / liquidity<b>Belum diaktifkan</b></div>
+          <div class="check">Multi-timeframe<b>Belum diaktifkan</b></div>
+          <div class="check">Risk: SL / TP<b>Belum diaktifkan</b></div>
+          <div class="check">Keputusan AI<b id="engine">Menunggu data</b></div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const API_URL =
+      "https://xauusd-signal-api.zareiman-wasikowska789.workers.dev/signal";
+
+    async function loadSignal() {
+      const price = document.getElementById("price");
+      const updated = document.getElementById("updated");
+      const market = document.getElementById("market");
+      const decision = document.getElementById("decision");
+      const confidence = document.getElementById("confidence");
+      const message = document.getElementById("message");
+      const engine = document.getElementById("engine");
+
+      price.textContent = "Memuatkan…";
+      updated.textContent = "Mengambil harga live…";
+
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.message || "API tidak dapat dihubungi.");
+
+        price.textContent = Number(data.price).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) + " USD";
+
+        decision.textContent = data.decision || "NO TRADE";
+        confidence.textContent = (data.confidence ?? 0) + " / 100";
+        message.textContent = data.message || "Data diterima.";
+        market.textContent = "Live connected ✓";
+        engine.textContent = data.status || "Online";
+        updated.textContent = "Dikemas kini: " +
+          new Date(data.updatedAt).toLocaleString("ms-MY");
+      } catch (error) {
+        price.textContent = "—";
+        updated.textContent = "Tidak dapat sambung ke API";
+        updated.className = "status error";
+        market.textContent = "Connection error";
+        message.textContent = error.message;
+        engine.textContent = "Offline";
+      }
+    }
+
+    loadSignal();
+  </script>
+</body>
+</html>
