@@ -6,11 +6,11 @@
 <title>Last Zone AI Trader — XAUUSD</title>
 <style>
 :root{--bg:#08101e;--card:#111d30;--line:#2a3e5d;--text:#eef4ff;--muted:#99abc6;--green:#42dc91;--amber:#ffbf69;--red:#ff6577;--blue:#24528a}*{box-sizing:border-box}
-body{margin:0;min-height:100vh;color:var(--text);font-family:Arial,sans-serif;background:radial-gradient(circle at top left,#183259,#08101e 45%)}
-.wrap{max-width:1120px;margin:auto;padding:26px 18px 50px}header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:20px;margin:0;letter-spacing:1px}.sub{color:var(--muted);font-size:13px;margin-top:6px}
-button{cursor:pointer;color:#fff;background:var(--blue);border:0;border-radius:8px;padding:10px 13px;font-weight:bold}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:20px}.card{background:rgba(17,29,48,.94);border:1px solid var(--line);border-radius:15px;padding:19px}.hero{background:linear-gradient(135deg,#123059,#103323)}
-.label{color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}.price{font-size:42px;font-weight:800;color:var(--green);margin:11px 0 6px}.decision{font-size:29px;font-weight:800;margin:22px 0 7px}.setup{font-size:18px;font-weight:bold;margin:6px 0 12px}.reason{color:#c4d1e5;line-height:1.55;font-size:14px}.score{text-align:center;display:grid;place-content:center;min-height:260px}.score strong{display:block;font-size:48px;margin:10px}.wide{grid-column:1/-1}
-.items{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.item{background:#0a1424;border:1px solid var(--line);padding:12px;border-radius:9px;font-size:13px}.item b{display:block;margin-top:6px;font-size:15px}.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}.status{color:var(--green);font-size:12px}.error{color:var(--red)}
+body{margin:0;color:var(--text);font-family:Arial,sans-serif;background:radial-gradient(circle at top left,#183259,#08101e 45%)}.wrap{max-width:1120px;margin:auto;padding:26px 18px 50px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:20px;margin:0}.sub{color:var(--muted);font-size:13px;margin-top:6px}button{cursor:pointer;color:#fff;background:var(--blue);border:0;border-radius:8px;padding:10px 13px;font-weight:bold}
+.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:20px}.card{background:rgba(17,29,48,.94);border:1px solid var(--line);border-radius:15px;padding:19px}.hero{background:linear-gradient(135deg,#123059,#103323)}.wide{grid-column:1/-1}
+.label{color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}.price{font-size:42px;font-weight:800;color:var(--green);margin:11px 0 6px}.decision{font-size:29px;font-weight:800;margin:22px 0 7px}.setup{font-size:18px;font-weight:bold;margin:6px 0 12px}.reason{color:#c4d1e5;line-height:1.55;font-size:14px}.score{text-align:center;display:grid;place-content:center;min-height:260px}.score strong{display:block;font-size:48px;margin:10px}
+.items{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.item{background:#0a1424;border:1px solid var(--line);padding:12px;border-radius:9px;font-size:13px}.item b{display:block;margin-top:6px;font-size:15px}.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}.status{color:var(--green);font-size:12px}
 @media(max-width:700px){header,.grid{display:block}header button{margin-top:15px}.card{margin-top:14px}.wide{grid-column:auto}.items{grid-template-columns:repeat(2,1fr)}.price{font-size:34px}}
 </style>
 </head>
@@ -25,7 +25,7 @@ button{cursor:pointer;color:#fff;background:var(--blue);border:0;border-radius:8
   <article class="card hero">
     <div class="label">Harga XAUUSD live</div>
     <div class="price" id="price">Memuatkan…</div>
-    <div class="status" id="updated">Menyambung ke engine…</div>
+    <div class="status" id="updated">Menyambung…</div>
     <div class="decision" id="decision">—</div>
     <div class="label">Signal setup</div>
     <div class="setup amber" id="setup">Memuatkan…</div>
@@ -35,57 +35,16 @@ button{cursor:pointer;color:#fff;background:var(--blue);border:0;border-radius:8
   <article class="card score">
     <div class="label">Signal confidence</div>
     <strong class="amber" id="confidence">—</strong>
-    <div class="sub">Signal dipantau secara automatik sehingga TP1 atau SL.</div>
+    <div class="sub">Signal aktif kekal dipaparkan sehingga TP1 atau SL terkena.</div>
   </article>
 
-  <article class="card wide">
-    <div class="label">Active signal tracker</div>
-    <div class="items">
-      <div class="item">Status<b id="activeStatus">Memuatkan…</b></div>
-      <div class="item">Direction<b id="activeDirection">—</b></div>
-      <div class="item">Active layer<b id="activeLayers">0</b></div>
-      <div class="item">Current setup<b id="activeSetup">—</b></div>
-    </div>
-  </article>
-
-  <article class="card wide">
-    <div class="label">Automatic win rate</div>
-    <div class="items">
-      <div class="item">Total closed trades<b id="totalTrades">0</b></div>
-      <div class="item">WIN<b class="green" id="wins">0</b></div>
-      <div class="item">LOSS<b class="red" id="losses">0</b></div>
-      <div class="item">Win rate<b class="amber" id="winRate">0%</b></div>
-    </div>
-    <div class="sub">WIN = TP1 kena dahulu. LOSS = SL kena dahulu. Dikemas kini oleh Worker setiap 5 minit.</div>
-  </article>
-
-  <article class="card wide">
-    <div class="label">Multi-timeframe trend</div>
-    <div class="items">
-      <div class="item">H4<b id="h4">—</b></div><div class="item">H1<b id="h1">—</b></div>
-      <div class="item">M15<b id="m15">—</b></div><div class="item">M5<b id="m5">—</b></div>
-    </div>
-  </article>
-
-  <article class="card wide">
-    <div class="label">Pattern recognition</div>
-    <div class="items">
-      <div class="item">RSI M15<b id="rsi">—</b></div><div class="item">ATR M15<b id="atr">—</b></div>
-      <div class="item">Hammer<b id="hammer">—</b></div><div class="item">Shooting Star<b id="star">—</b></div>
-      <div class="item">Bullish engulfing<b id="bullEngulf">—</b></div><div class="item">Bearish engulfing<b id="bearEngulf">—</b></div>
-      <div class="item">Bullish BOS<b id="bullBos">—</b></div><div class="item">Bearish BOS<b id="bearBos">—</b></div>
-      <div class="item">Bullish sweep<b id="bullSweep">—</b></div><div class="item">Bearish sweep<b id="bearSweep">—</b></div>
-    </div>
-  </article>
-
-  <article class="card wide">
-    <div class="label">Trade plan</div>
-    <div class="items">
-      <div class="item">Entry<b id="entry">—</b></div><div class="item">Stop Loss<b id="sl">—</b></div>
-      <div class="item">TP1<b id="tp1">—</b></div><div class="item">TP2<b id="tp2">—</b></div>
-    </div>
-  </article>
+  <article class="card wide"><div class="label">Active signal tracker</div><div class="items" id="active"></div></article>
+  <article class="card wide"><div class="label">Automatic win rate</div><div class="items" id="stats"></div><div class="sub">WIN = TP1 kena dahulu. LOSS = SL kena dahulu.</div></article>
+  <article class="card wide"><div class="label">Multi-timeframe trend</div><div class="items" id="trends"></div></article>
+  <article class="card wide"><div class="label">Pattern recognition</div><div class="items" id="patterns"></div></article>
+  <article class="card wide"><div class="label">Trade plan — signal aktif</div><div class="items" id="trade"></div></article>
 </section>
+
 <p class="sub" style="margin-top:18px">Eksperimen untuk paper testing sahaja, bukan nasihat kewangan.</p>
 </main>
 
@@ -93,57 +52,79 @@ button{cursor:pointer;color:#fff;background:var(--blue);border:0;border-radius:8
 const API="https://xauusd-signal-api.zareiman-wasikowska789.workers.dev/signal";
 const $=id=>document.getElementById(id);
 const money=v=>v==null?"—":Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-const trend=v=>v==="BULLISH"?"green":v==="BEARISH"?"red":"amber";
-function pattern(id,value,color){$(id).textContent=value?"Detected ✓":"—";$(id).className=value?color:"amber"}
+const cls=v=>v==="BULLISH"||v==="BUY"?"green":v==="BEARISH"||v==="SELL"?"red":"amber";
+const card=(name,value,color="")=>`<div class="item">${name}<b class="${color}">${value}</b></div>`;
+const yes=(value,color)=>value?`<span class="${color}">Detected ✓</span>`:"—";
+
+function renderCards(id,items){$(id).innerHTML=items.map(x=>card(...x)).join("")}
 
 async function loadSignal(){
   try{
     const res=await fetch(API),d=await res.json();
     if(!res.ok)throw new Error(d.message||"API tidak dapat dihubungi.");
-    const a=d.analysis||{},buy=d.decision==="BUY",sell=d.decision==="SELL",w=d.winRate||{},active=d.activeSignal;
+
+    const a=d.analysis||{}, w=d.winRate||{}, active=d.activeSignal;
+    const openLayers=active?.layers?.filter(x=>x.status==="ACTIVE")||[];
+
+    /* Signal aktif sentiasa menang atas scan terbaru */
+    const shown=openLayers.at(-1)||d;
+    const isActive=openLayers.length>0;
+    const buy=shown.decision==="BUY",sell=shown.decision==="SELL";
 
     $("price").textContent=money(d.price)+" USD";
-    $("decision").textContent=d.decision||"NO TRADE";
+    $("decision").textContent=isActive?"ACTIVE "+shown.decision:(shown.decision||"NO TRADE");
     $("decision").className="decision "+(buy?"green":sell?"red":"amber");
-    $("setup").textContent=d.setup||"Tiada setup lengkap";
+    $("setup").textContent=shown.setup||"Tiada setup lengkap";
     $("setup").className="setup "+(buy?"green":sell?"red":"amber");
-    $("confidence").textContent=(d.confidence??0)+" / 100";
+    $("confidence").textContent=(shown.confidence??0)+" / 100";
     $("confidence").className=buy?"green":sell?"red":"amber";
-    $("message").textContent=d.message||"—";
+    $("message").textContent=isActive
+      ? "Signal ini masih aktif dan akan kekal sehingga TP1 atau SL terkena."
+      : (d.message||"—");
     $("updated").textContent="Dikemas kini: "+new Date(d.updatedAt).toLocaleString("ms-MY");
 
-    $("totalTrades").textContent=w.total??0;
-    $("wins").textContent=w.wins??0;
-    $("losses").textContent=w.losses??0;
-    $("winRate").textContent=(w.rate??0)+"%";
+    renderCards("active",isActive?[
+      ["Status","ACTIVE","green"],
+      ["Direction",active.direction,cls(active.direction)],
+      ["Active layer",openLayers.length+" / "+active.layers.length,"green"],
+      ["Current setup",shown.setup,cls(shown.decision)]
+    ]:[
+      ["Status","Tiada signal aktif","amber"],
+      ["Direction","—",""],["Active layer","0",""],["Current setup","—",""]
+    ]);
 
-    if(active){
-      const open=active.layers.filter(x=>x.status==="ACTIVE");
-      $("activeStatus").textContent="ACTIVE";
-      $("activeStatus").className="green";
-      $("activeDirection").textContent=active.direction;
-      $("activeDirection").className=active.direction==="BUY"?"green":"red";
-      $("activeLayers").textContent=open.length+" / "+active.layers.length;
-      $("activeSetup").textContent=open.map(x=>x.setup).join(", ")||"Menunggu result";
-    }else{
-      $("activeStatus").textContent="Tiada signal aktif";
-      $("activeStatus").className="amber";
-      $("activeDirection").textContent="—";$("activeLayers").textContent="0";$("activeSetup").textContent="—";
-    }
+    renderCards("stats",[
+      ["Total closed trades",w.total??0,""],
+      ["WIN",w.wins??0,"green"],
+      ["LOSS",w.losses??0,"red"],
+      ["Win rate",(w.rate??0)+"%","amber"]
+    ]);
 
-    [["h4",a.h4Trend],["h1",a.h1Trend],["m15",a.m15Trend],["m5",a.m5Trend]].forEach(([id,v])=>{
-      $(id).textContent=v||"—";$(id).className=trend(v);
-    });
-    $("rsi").textContent=a.m15Rsi??"—";$("atr").textContent=a.m15Atr??"—";
-    pattern("hammer",a.hammer,"green");pattern("star",a.shootingStar,"red");
-    pattern("bullEngulf",a.bullishEngulfing,"green");pattern("bearEngulf",a.bearishEngulfing,"red");
-    pattern("bullBos",a.bullishBOS,"green");pattern("bearBos",a.bearishBOS,"red");
-    pattern("bullSweep",a.bullishSweep,"green");pattern("bearSweep",a.bearishSweep,"red");
-    $("entry").textContent=money(d.entry);$("sl").textContent=money(d.stopLoss);
-    $("tp1").textContent=money(d.takeProfit1);$("tp2").textContent=money(d.takeProfit2);
+    renderCards("trends",[
+      ["H4",a.h4Trend||"—",cls(a.h4Trend)],
+      ["H1",a.h1Trend||"—",cls(a.h1Trend)],
+      ["M15",a.m15Trend||"—",cls(a.m15Trend)],
+      ["M5",a.m5Trend||"—",cls(a.m5Trend)]
+    ]);
+
+    renderCards("patterns",[
+      ["RSI M15",a.m15Rsi??"—",""],["ATR M15",a.m15Atr??"—",""],
+      ["Hammer",yes(a.hammer,"green"),""],["Shooting Star",yes(a.shootingStar,"red"),""],
+      ["Bullish engulfing",yes(a.bullishEngulfing,"green"),""],["Bearish engulfing",yes(a.bearishEngulfing,"red"),""],
+      ["Bullish BOS",yes(a.bullishBOS,"green"),""],["Bearish BOS",yes(a.bearishBOS,"red"),""],
+      ["Bullish sweep",yes(a.bullishSweep,"green"),""],["Bearish sweep",yes(a.bearishSweep,"red"),""]
+    ]);
+
+    renderCards("trade",[
+      ["Entry",money(shown.entry),""],
+      ["Stop Loss",money(shown.stopLoss),"red"],
+      ["TP1",money(shown.takeProfit1),"green"],
+      ["TP2",money(shown.takeProfit2),"green"]
+    ]);
   }catch(e){
-    $("decision").textContent="CONNECTION ERROR";$("decision").className="decision red";
-    $("message").textContent=e.message;$("updated").textContent="Tidak dapat sambung ke API";
+    $("decision").textContent="CONNECTION ERROR";
+    $("decision").className="decision red";
+    $("message").textContent=e.message;
   }
 }
 loadSignal();
