@@ -1,134 +1,58 @@
 <!doctype html>
 <html lang="ms">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Last Zone AI Trader — XAUUSD</title>
 <style>
 :root{--bg:#08101e;--card:#111d30;--line:#2a3e5d;--text:#eef4ff;--muted:#99abc6;--green:#42dc91;--amber:#ffbf69;--red:#ff6577;--blue:#24528a}*{box-sizing:border-box}
-body{margin:0;color:var(--text);font-family:Arial,sans-serif;background:radial-gradient(circle at top left,#183259,#08101e 45%)}.wrap{max-width:1120px;margin:auto;padding:26px 18px 50px}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:20px;margin:0}.sub{color:var(--muted);font-size:13px;margin-top:6px}button{cursor:pointer;color:#fff;background:var(--blue);border:0;border-radius:8px;padding:10px 13px;font-weight:bold}
-.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:20px}.card{background:rgba(17,29,48,.94);border:1px solid var(--line);border-radius:15px;padding:19px}.hero{background:linear-gradient(135deg,#123059,#103323)}.wide{grid-column:1/-1}
-.label{color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}.price{font-size:42px;font-weight:800;color:var(--green);margin:11px 0 6px}.decision{font-size:29px;font-weight:800;margin:22px 0 7px}.setup{font-size:18px;font-weight:bold;margin:6px 0 12px}.reason{color:#c4d1e5;line-height:1.55;font-size:14px}.score{text-align:center;display:grid;place-content:center;min-height:260px}.score strong{display:block;font-size:48px;margin:10px}
-.items{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.item{background:#0a1424;border:1px solid var(--line);padding:12px;border-radius:9px;font-size:13px}.item b{display:block;margin-top:6px;font-size:15px}.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}.status{color:var(--green);font-size:12px}
-@media(max-width:700px){header,.grid{display:block}header button{margin-top:15px}.card{margin-top:14px}.wide{grid-column:auto}.items{grid-template-columns:repeat(2,1fr)}.price{font-size:34px}}
+body{margin:0;color:var(--text);font-family:Arial,sans-serif;background:radial-gradient(circle at top left,#183259,#08101e 45%)}.wrap{max-width:1120px;margin:auto;padding:26px 18px 50px}header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:20px;margin:0}.sub{color:var(--muted);font-size:13px;margin-top:6px}button{cursor:pointer;color:#fff;background:var(--blue);border:0;border-radius:8px;padding:10px 13px;font-weight:bold}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:20px}.card{background:rgba(17,29,48,.94);border:1px solid var(--line);border-radius:15px;padding:19px}.hero{background:linear-gradient(135deg,#123059,#103323)}.wide{grid-column:1/-1}.label{color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}.price{font-size:42px;font-weight:800;color:var(--green);margin:11px 0 6px}.decision{font-size:29px;font-weight:800;margin:22px 0 7px}.setup{font-size:18px;font-weight:bold;margin:6px 0 12px}.reason{color:#c4d1e5;line-height:1.55;font-size:14px}.score{text-align:center;display:grid;place-content:center;min-height:260px}.score strong{display:block;font-size:48px;margin:10px}.items{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.item{background:#0a1424;border:1px solid var(--line);padding:12px;border-radius:9px;font-size:13px}.item b{display:block;margin-top:6px;font-size:15px}.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}.status{color:var(--green);font-size:12px}@media(max-width:700px){header,.grid{display:block}header button{margin-top:15px}.card{margin-top:14px}.wide{grid-column:auto}.items{grid-template-columns:repeat(2,1fr)}.price{font-size:34px}}
 </style>
 </head>
 <body>
 <main class="wrap">
-<header>
-  <div><h1>LAST ZONE AI TRADER</h1><div class="sub">XAUUSD · Auto signal tracker · Experimental</div></div>
-  <button onclick="loadSignal()">Refresh analisis</button>
-</header>
-
+<header><div><h1>LAST ZONE AI TRADER</h1><div class="sub">XAUUSD · Auto signal tracker · Experimental</div></div><button onclick="loadSignal()">Refresh analisis</button></header>
 <section class="grid">
-  <article class="card hero">
-    <div class="label">Harga XAUUSD live</div>
-    <div class="price" id="price">Memuatkan…</div>
-    <div class="status" id="updated">Menyambung…</div>
-    <div class="decision" id="decision">—</div>
-    <div class="label">Signal setup</div>
-    <div class="setup amber" id="setup">Memuatkan…</div>
-    <div class="reason" id="message">Menunggu analisis market.</div>
-  </article>
-
-  <article class="card score">
-    <div class="label">Signal confidence</div>
-    <strong class="amber" id="confidence">—</strong>
-    <div class="sub">Signal aktif kekal dipaparkan sehingga TP1 atau SL terkena.</div>
-  </article>
-
-  <article class="card wide"><div class="label">Active signal tracker</div><div class="items" id="active"></div></article>
-  <article class="card wide"><div class="label">Automatic win rate</div><div class="items" id="stats"></div><div class="sub">WIN = TP1 kena dahulu. LOSS = SL kena dahulu.</div></article>
-  <article class="card wide"><div class="label">Multi-timeframe trend</div><div class="items" id="trends"></div></article>
-  <article class="card wide"><div class="label">Pattern recognition</div><div class="items" id="patterns"></div></article>
-  <article class="card wide"><div class="label">Trade plan — signal aktif</div><div class="items" id="trade"></div></article>
+<article class="card hero">
+<div class="label">Harga XAUUSD live</div><div class="price" id="price">Memuatkan…</div><div class="status" id="updated">Menyambung…</div>
+<div class="decision" id="decision">—</div>
+<div class="label">Signal setup</div><div class="setup amber" id="setup">Memuatkan…</div>
+<div class="label">Zone mode</div><div class="setup amber" id="zoneMode">Memuatkan…</div>
+<div class="reason" id="message">Menunggu analisis market.</div>
+</article>
+<article class="card score"><div class="label">Signal confidence</div><strong class="amber" id="confidence">—</strong><div class="sub">Signal aktif kekal dipaparkan sehingga TP1 atau SL terkena.</div></article>
+<article class="card wide"><div class="label">Active signal tracker</div><div class="items" id="active"></div></article>
+<article class="card wide"><div class="label">Automatic win rate</div><div class="items" id="stats"></div></article>
+<article class="card wide"><div class="label">Multi-timeframe trend</div><div class="items" id="trends"></div></article>
+<article class="card wide"><div class="label">Pattern recognition</div><div class="items" id="patterns"></div></article>
+<article class="card wide"><div class="label">Trade plan — signal aktif</div><div class="items" id="trade"></div></article>
 </section>
-
 <p class="sub" style="margin-top:18px">Eksperimen untuk paper testing sahaja, bukan nasihat kewangan.</p>
 </main>
-
 <script>
 const API="https://xauusd-signal-api.zareiman-wasikowska789.workers.dev/signal";
-const $=id=>document.getElementById(id);
-const money=v=>v==null?"—":Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const $=id=>document.getElementById(id),money=v=>v==null?"—":Number(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const cls=v=>v==="BULLISH"||v==="BUY"?"green":v==="BEARISH"||v==="SELL"?"red":"amber";
-const card=(name,value,color="")=>`<div class="item">${name}<b class="${color}">${value}</b></div>`;
-const yes=(value,color)=>value?`<span class="${color}">Detected ✓</span>`:"—";
-
-function renderCards(id,items){$(id).innerHTML=items.map(x=>card(...x)).join("")}
+const card=(n,v,c="")=>`<div class="item">${n}<b class="${c}">${v}</b></div>`;
+const yes=(v,c)=>v?`<span class="${c}">Detected ✓</span>`:"—";
+const render=(id,a)=>$(id).innerHTML=a.map(x=>card(...x)).join("");
 
 async function loadSignal(){
-  try{
-    const res=await fetch(API),d=await res.json();
-    if(!res.ok)throw new Error(d.message||"API tidak dapat dihubungi.");
-
-    const a=d.analysis||{}, w=d.winRate||{}, active=d.activeSignal;
-    const openLayers=active?.layers?.filter(x=>x.status==="ACTIVE")||[];
-
-    /* Signal aktif sentiasa menang atas scan terbaru */
-    const shown=openLayers.at(-1)||d;
-    const isActive=openLayers.length>0;
-    const buy=shown.decision==="BUY",sell=shown.decision==="SELL";
-
-    $("price").textContent=money(d.price)+" USD";
-    $("decision").textContent=isActive?"ACTIVE "+shown.decision:(shown.decision||"NO TRADE");
-    $("decision").className="decision "+(buy?"green":sell?"red":"amber");
-    $("setup").textContent=shown.setup||"Tiada setup lengkap";
-    $("setup").className="setup "+(buy?"green":sell?"red":"amber");
-    $("confidence").textContent=(shown.confidence??0)+" / 100";
-    $("confidence").className=buy?"green":sell?"red":"amber";
-    $("message").textContent=isActive
-      ? "Signal ini masih aktif dan akan kekal sehingga TP1 atau SL terkena."
-      : (d.message||"—");
-    $("updated").textContent="Dikemas kini: "+new Date(d.updatedAt).toLocaleString("ms-MY");
-
-    renderCards("active",isActive?[
-      ["Status","ACTIVE","green"],
-      ["Direction",active.direction,cls(active.direction)],
-      ["Active layer",openLayers.length+" / "+active.layers.length,"green"],
-      ["Current setup",shown.setup,cls(shown.decision)]
-    ]:[
-      ["Status","Tiada signal aktif","amber"],
-      ["Direction","—",""],["Active layer","0",""],["Current setup","—",""]
-    ]);
-
-    renderCards("stats",[
-      ["Total closed trades",w.total??0,""],
-      ["WIN",w.wins??0,"green"],
-      ["LOSS",w.losses??0,"red"],
-      ["Win rate",(w.rate??0)+"%","amber"]
-    ]);
-
-    renderCards("trends",[
-      ["H4",a.h4Trend||"—",cls(a.h4Trend)],
-      ["H1",a.h1Trend||"—",cls(a.h1Trend)],
-      ["M15",a.m15Trend||"—",cls(a.m15Trend)],
-      ["M5",a.m5Trend||"—",cls(a.m5Trend)]
-    ]);
-
-    renderCards("patterns",[
-      ["RSI M15",a.m15Rsi??"—",""],["ATR M15",a.m15Atr??"—",""],
-      ["Hammer",yes(a.hammer,"green"),""],["Shooting Star",yes(a.shootingStar,"red"),""],
-      ["Bullish engulfing",yes(a.bullishEngulfing,"green"),""],["Bearish engulfing",yes(a.bearishEngulfing,"red"),""],
-      ["Bullish BOS",yes(a.bullishBOS,"green"),""],["Bearish BOS",yes(a.bearishBOS,"red"),""],
-      ["Bullish sweep",yes(a.bullishSweep,"green"),""],["Bearish sweep",yes(a.bearishSweep,"red"),""]
-    ]);
-
-    renderCards("trade",[
-      ["Entry",money(shown.entry),""],
-      ["Stop Loss",money(shown.stopLoss),"red"],
-      ["TP1",money(shown.takeProfit1),"green"],
-      ["TP2",money(shown.takeProfit2),"green"]
-    ]);
-  }catch(e){
-    $("decision").textContent="CONNECTION ERROR";
-    $("decision").className="decision red";
-    $("message").textContent=e.message;
-  }
+try{
+const res=await fetch(API),d=await res.json();if(!res.ok)throw Error(d.message||"API error");
+const a=d.analysis||{},w=d.winRate||{},active=d.activeSignal,open=active?.layers?.filter(x=>x.status==="ACTIVE")||[],shown=open.at(-1)||d,isActive=open.length>0,buy=shown.decision==="BUY",sell=shown.decision==="SELL";
+$("price").textContent=money(d.price)+" USD";$("decision").textContent=isActive?"ACTIVE "+shown.decision:(shown.decision||"NO TRADE");$("decision").className="decision "+(buy?"green":sell?"red":"amber");
+$("setup").textContent=shown.setup||"Tiada setup lengkap";$("setup").className="setup "+(buy?"green":sell?"red":"amber");
+$("zoneMode").textContent=shown.zoneMode==="SHARP"?"🟢 SHARP ENTRY":shown.zoneMode==="WIDE ZONE"?"⚠️ WIDE ZONE":"—";$("zoneMode").className="setup "+(shown.zoneMode==="SHARP"?"green":"amber");
+$("confidence").textContent=(shown.confidence??0)+" / 100";$("confidence").className=buy?"green":sell?"red":"amber";
+$("message").textContent=isActive?"Signal ini masih aktif dan akan kekal sehingga TP1 atau SL terkena.":(d.message||"—");$("updated").textContent="Dikemas kini: "+new Date(d.updatedAt).toLocaleString("ms-MY");
+render("active",isActive?[["Status","ACTIVE","green"],["Direction",active.direction,cls(active.direction)],["Active layer",open.length+" / "+active.layers.length,"green"],["Current setup",shown.setup,cls(shown.decision)]]:[["Status","Tiada signal aktif","amber"],["Direction","—"],["Active layer","0"],["Current setup","—"]]);
+render("stats",[["Total closed trades",w.total??0],["WIN",w.wins??0,"green"],["LOSS",w.losses??0,"red"],["Win rate",(w.rate??0)+"%","amber"]]);
+render("trends",[["H4",a.h4Trend||"—",cls(a.h4Trend)],["H1",a.h1Trend||"—",cls(a.h1Trend)],["M15",a.m15Trend||"—",cls(a.m15Trend)],["M5",a.m5Trend||"—",cls(a.m5Trend)]]);
+render("patterns",[["RSI M15",a.m15Rsi??"—"],["ATR M15",a.m15Atr??"—"],["Bullish engulfing",yes(a.bullishEngulfing,"green")],["Bearish engulfing",yes(a.bearishEngulfing,"red")],["Bullish BOS",yes(a.bullishBOS,"green")],["Bearish BOS",yes(a.bearishBOS,"red")],["Bullish sweep",yes(a.bullishSweep,"green")],["Bearish sweep",yes(a.bearishSweep,"red")]]);
+render("trade",[["Entry",money(shown.entry)],["Stop Loss",money(shown.stopLoss),"red"],["TP1",money(shown.takeProfit1),"green"],["TP2",money(shown.takeProfit2),"green"]]);
+}catch(e){$("decision").textContent="CONNECTION ERROR";$("decision").className="decision red";$("message").textContent=e.message}
 }
-loadSignal();
-setInterval(loadSignal,60000);
+loadSignal();setInterval(loadSignal,60000);
 </script>
 </body>
 </html>
