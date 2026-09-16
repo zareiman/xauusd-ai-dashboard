@@ -5,19 +5,48 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Last Zone AI Trader — XAUUSD</title>
   <style>
-    :root{--bg:#08101e;--card:#111d30;--line:#2a3e5d;--text:#eef4ff;--muted:#99abc6;--green:#42dc91;--amber:#ffbf69;--red:#ff6577}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font-family:Arial,sans-serif;background:radial-gradient(circle at top left,#183259,#08101e 45%)}
-    .wrap{max-width:1120px;margin:auto;padding:26px 18px 50px}header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:20px;margin:0;letter-spacing:1px}.sub{color:var(--muted);font-size:13px;margin-top:6px}
-    button{cursor:pointer;color:#fff;background:#24528a;border:0;border-radius:8px;padding:10px 13px;font-weight:bold}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:20px}.card{background:rgba(17,29,48,.94);border:1px solid var(--line);border-radius:15px;padding:19px}.hero{background:linear-gradient(135deg,#123059,#103323)}
-    .label{color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}.price{font-size:42px;font-weight:800;color:var(--green);margin:11px 0 6px}.decision{font-size:29px;font-weight:800;margin:25px 0 7px}.reason{color:#c4d1e5;line-height:1.55;font-size:14px}.score{text-align:center;display:grid;place-content:center;min-height:250px}.score strong{display:block;font-size:48px;margin:10px}.wide{grid-column:1/-1}
-    .items{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.item{background:#0a1424;border:1px solid var(--line);padding:12px;border-radius:9px;font-size:13px}.item b{display:block;margin-top:6px;font-size:15px}.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}.status{color:var(--green);font-size:12px}.error{color:var(--red)}
-    @media(max-width:700px){header,.grid{display:block}header button{margin-top:15px}.card{margin-top:14px}.wide{grid-column:auto}.items{grid-template-columns:repeat(2,1fr)}.price{font-size:34px}}
+    :root{--bg:#08101e;--card:#111d30;--line:#2a3e5d;--text:#eef4ff;--muted:#99abc6;--green:#42dc91;--amber:#ffbf69;--red:#ff6577;--blue:#24528a}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;color:var(--text);font-family:Arial,sans-serif;background:radial-gradient(circle at top left,#183259,#08101e 45%)}
+    .wrap{max-width:1120px;margin:auto;padding:26px 18px 50px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    h1{font-size:20px;margin:0;letter-spacing:1px}
+    .sub{color:var(--muted);font-size:13px;margin-top:6px}
+    button{cursor:pointer;color:#fff;background:var(--blue);border:0;border-radius:8px;padding:10px 13px;font-weight:bold}
+    button:hover{filter:brightness(1.14)}
+    .grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px;margin-top:20px}
+    .card{background:rgba(17,29,48,.94);border:1px solid var(--line);border-radius:15px;padding:19px}
+    .hero{background:linear-gradient(135deg,#123059,#103323)}
+    .label{color:var(--muted);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+    .price{font-size:42px;font-weight:800;color:var(--green);margin:11px 0 6px}
+    .decision{font-size:29px;font-weight:800;margin:22px 0 7px}
+    .setup{font-size:18px;font-weight:bold;margin:6px 0 12px}
+    .reason{color:#c4d1e5;line-height:1.55;font-size:14px}
+    .score{text-align:center;display:grid;place-content:center;min-height:260px}
+    .score strong{display:block;font-size:48px;margin:10px}
+    .wide{grid-column:1/-1}
+    .items{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    .item{background:#0a1424;border:1px solid var(--line);padding:12px;border-radius:9px;font-size:13px}
+    .item b{display:block;margin-top:6px;font-size:15px}
+    .tracker{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    .tracker .item{text-align:center}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+    .win{background:#176b46}.loss{background:#8d2637}.be{background:#74531d}.reset{background:#344054}
+    .green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}
+    .status{color:var(--green);font-size:12px}.error{color:var(--red)}
+    @media(max-width:700px){
+      header,.grid{display:block}header button{margin-top:15px}.card{margin-top:14px}
+      .wide{grid-column:auto}.items,.tracker{grid-template-columns:repeat(2,1fr)}.price{font-size:34px}
+    }
   </style>
 </head>
 <body>
   <main class="wrap">
     <header>
-      <div><h1>LAST ZONE AI TRADER</h1><div class="sub">XAUUSD · Multi-timeframe experimental engine</div></div>
+      <div>
+        <h1>LAST ZONE AI TRADER</h1>
+        <div class="sub">XAUUSD · Independent signal setups · Experimental</div>
+      </div>
       <button onclick="loadSignal()">Refresh analisis</button>
     </header>
 
@@ -25,15 +54,20 @@
       <article class="card hero">
         <div class="label">Harga XAUUSD live</div>
         <div class="price" id="price">Memuatkan…</div>
-        <div class="status" id="updated">Menyambung…</div>
+        <div class="status" id="updated">Menyambung ke engine…</div>
+
         <div class="decision" id="decision">—</div>
+
+        <div class="label">Signal setup</div>
+        <div class="setup amber" id="setup">Memuatkan…</div>
+
         <div class="reason" id="message">Menunggu analisis market.</div>
       </article>
 
       <article class="card score">
         <div class="label">Signal confidence</div>
-        <strong id="confidence">—</strong>
-        <div class="sub">Minimum dua pengesahan SMC dan semua timeframe perlu selari.</div>
+        <strong class="amber" id="confidence">—</strong>
+        <div class="sub">Mana-mana setup lengkap boleh keluarkan signal.</div>
       </article>
 
       <article class="card wide">
@@ -47,16 +81,20 @@
       </article>
 
       <article class="card wide">
-        <div class="label">SMC & technical confluence</div>
+        <div class="label">Pattern recognition</div>
         <div class="items">
           <div class="item">RSI M15<b id="rsi">—</b></div>
           <div class="item">ATR M15<b id="atr">—</b></div>
+          <div class="item">Hammer<b id="hammer">—</b></div>
+          <div class="item">Shooting Star<b id="star">—</b></div>
+          <div class="item">Bullish engulfing<b id="bullEngulf">—</b></div>
+          <div class="item">Bearish engulfing<b id="bearEngulf">—</b></div>
           <div class="item">Bullish BOS<b id="bullBos">—</b></div>
           <div class="item">Bearish BOS<b id="bearBos">—</b></div>
           <div class="item">Bullish sweep<b id="bullSweep">—</b></div>
           <div class="item">Bearish sweep<b id="bearSweep">—</b></div>
-          <div class="item">Bullish FVG<b id="bullFvg">—</b></div>
-          <div class="item">Bearish FVG<b id="bearFvg">—</b></div>
+          <div class="item">Double Top<b id="doubleTop">—</b></div>
+          <div class="item">Double Bottom<b id="doubleBottom">—</b></div>
         </div>
       </article>
 
@@ -69,20 +107,109 @@
           <div class="item">TP2<b id="tp2">—</b></div>
         </div>
       </article>
+
+      <article class="card wide">
+        <div class="label">Manual win rate tracker</div>
+        <div class="tracker">
+          <div class="item">Total trade<b id="totalTrades">0</b></div>
+          <div class="item">WIN<b class="green" id="wins">0</b></div>
+          <div class="item">LOSS<b class="red" id="losses">0</b></div>
+          <div class="item">Win rate<b class="amber" id="winRate">0%</b></div>
+        </div>
+        <div class="actions">
+          <button class="win" onclick="recordResult('win')">+ WIN</button>
+          <button class="loss" onclick="recordResult('loss')">+ LOSS</button>
+          <button class="be" onclick="recordResult('be')">+ BREAK EVEN</button>
+          <button class="reset" onclick="resetStats()">Reset tracker</button>
+        </div>
+        <div class="sub">Tekan sekali sahaja selepas satu signal selesai. Data disimpan dalam browser ini sahaja.</div>
+      </article>
     </section>
 
-    <p class="sub" style="margin-top:18px">Eksperimen untuk paper testing sahaja. Jangan gunakan signal ini untuk keputusan trading sebenar sebelum backtest.</p>
+    <p class="sub" style="margin-top:18px">
+      Signal ini eksperimen untuk paper testing sahaja, bukan nasihat kewangan.
+    </p>
   </main>
 
   <script>
     const API_URL = "https://xauusd-signal-api.zareiman-wasikowska789.workers.dev/signal";
-    const priceFormat = value => value == null ? "—" : Number(value).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
-    const signalClass = value => value === "BULLISH" ? "green" : value === "BEARISH" ? "red" : "amber";
-    const detected = (id, value, colour) => {
-      const el = document.getElementById(id);
-      el.textContent = value ? "Detected ✓" : "—";
-      el.className = value ? colour : "amber";
+    const STORAGE_KEY = "last-zone-xauusd-winrate-v1";
+
+    const ui = {
+      price: document.getElementById("price"),
+      updated: document.getElementById("updated"),
+      decision: document.getElementById("decision"),
+      setup: document.getElementById("setup"),
+      confidence: document.getElementById("confidence"),
+      message: document.getElementById("message"),
+      h4: document.getElementById("h4"),
+      h1: document.getElementById("h1"),
+      m15: document.getElementById("m15"),
+      m5: document.getElementById("m5"),
+      rsi: document.getElementById("rsi"),
+      atr: document.getElementById("atr"),
+      hammer: document.getElementById("hammer"),
+      star: document.getElementById("star"),
+      bullEngulf: document.getElementById("bullEngulf"),
+      bearEngulf: document.getElementById("bearEngulf"),
+      bullBos: document.getElementById("bullBos"),
+      bearBos: document.getElementById("bearBos"),
+      bullSweep: document.getElementById("bullSweep"),
+      bearSweep: document.getElementById("bearSweep"),
+      doubleTop: document.getElementById("doubleTop"),
+      doubleBottom: document.getElementById("doubleBottom"),
+      entry: document.getElementById("entry"),
+      sl: document.getElementById("sl"),
+      tp1: document.getElementById("tp1"),
+      tp2: document.getElementById("tp2"),
+      totalTrades: document.getElementById("totalTrades"),
+      wins: document.getElementById("wins"),
+      losses: document.getElementById("losses"),
+      winRate: document.getElementById("winRate"),
     };
+
+    const formatPrice = value =>
+      value == null ? "—" : Number(value).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+    const trendClass = value =>
+      value === "BULLISH" ? "green" : value === "BEARISH" ? "red" : "amber";
+
+    function pattern(id, found, colour) {
+      ui[id].textContent = found ? "Detected ✓" : "—";
+      ui[id].className = found ? colour : "amber";
+    }
+
+    function readStats() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { win: 0, loss: 0, be: 0 };
+    }
+
+    function renderStats() {
+      const stats = readStats();
+      const total = stats.win + stats.loss + stats.be;
+      const decidedTrades = stats.win + stats.loss;
+      const rate = decidedTrades ? ((stats.win / decidedTrades) * 100).toFixed(1) : 0;
+
+      ui.totalTrades.textContent = total;
+      ui.wins.textContent = stats.win;
+      ui.losses.textContent = stats.loss;
+      ui.winRate.textContent = rate + "%";
+    }
+
+    function recordResult(result) {
+      const stats = readStats();
+      stats[result] += 1;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+      renderStats();
+    }
+
+    function resetStats() {
+      if (!confirm("Reset semua rekod win rate?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      renderStats();
+    }
 
     async function loadSignal() {
       try {
@@ -94,43 +221,54 @@
         const buy = data.decision === "BUY";
         const sell = data.decision === "SELL";
 
-        price.textContent = priceFormat(data.price) + " USD";
-        decision.textContent = data.decision || "NO TRADE";
-        decision.className = "decision " + (buy ? "green" : sell ? "red" : "amber");
-        confidence.textContent = (data.confidence ?? 0) + " / 100";
-        confidence.className = buy ? "green" : sell ? "red" : "amber";
-        message.textContent = data.message || "—";
-        updated.textContent = "Dikemas kini: " + new Date(data.updatedAt).toLocaleString("ms-MY");
+        ui.price.textContent = formatPrice(data.price) + " USD";
+        ui.decision.textContent = data.decision || "NO TRADE";
+        ui.decision.className = "decision " + (buy ? "green" : sell ? "red" : "amber");
 
-        [["h4",a.h4Trend],["h1",a.h1Trend],["m15",a.m15Trend],["m5",a.m5Trend]].forEach(([id,value]) => {
-          const el = document.getElementById(id);
-          el.textContent = value || "—";
-          el.className = signalClass(value);
-        });
+        ui.setup.textContent = data.setup || "Tiada setup lengkap";
+        ui.setup.className = "setup " + (buy ? "green" : sell ? "red" : "amber");
 
-        rsi.textContent = a.m15Rsi ?? "—";
-        atr.textContent = a.m15Atr ?? "—";
-        detected("bullBos",a.bullishBOS,"green");
-        detected("bearBos",a.bearishBOS,"red");
-        detected("bullSweep",a.bullishSweep,"green");
-        detected("bearSweep",a.bearishSweep,"red");
-        detected("bullFvg",a.bullishFVG,"green");
-        detected("bearFvg",a.bearishFVG,"red");
+        ui.confidence.textContent = (data.confidence ?? 0) + " / 100";
+        ui.confidence.className = buy ? "green" : sell ? "red" : "amber";
+        ui.message.textContent = data.message || "—";
+        ui.updated.textContent = "Dikemas kini: " +
+          new Date(data.updatedAt).toLocaleString("ms-MY");
 
-        entry.textContent = priceFormat(data.entry);
-        sl.textContent = priceFormat(data.stopLoss);
-        tp1.textContent = priceFormat(data.takeProfit1);
-        tp2.textContent = priceFormat(data.takeProfit2);
+        [["h4", a.h4Trend], ["h1", a.h1Trend], ["m15", a.m15Trend], ["m5", a.m5Trend]]
+          .forEach(([id, value]) => {
+            ui[id].textContent = value || "—";
+            ui[id].className = trendClass(value);
+          });
+
+        ui.rsi.textContent = a.m15Rsi ?? "—";
+        ui.atr.textContent = a.m15Atr ?? "—";
+
+        pattern("hammer", a.hammer, "green");
+        pattern("star", a.shootingStar, "red");
+        pattern("bullEngulf", a.bullishEngulfing, "green");
+        pattern("bearEngulf", a.bearishEngulfing, "red");
+        pattern("bullBos", a.bullishBOS, "green");
+        pattern("bearBos", a.bearishBOS, "red");
+        pattern("bullSweep", a.bullishSweep, "green");
+        pattern("bearSweep", a.bearishSweep, "red");
+        pattern("doubleTop", a.doubleTop, "red");
+        pattern("doubleBottom", a.doubleBottom, "green");
+
+        ui.entry.textContent = formatPrice(data.entry);
+        ui.sl.textContent = formatPrice(data.stopLoss);
+        ui.tp1.textContent = formatPrice(data.takeProfit1);
+        ui.tp2.textContent = formatPrice(data.takeProfit2);
       } catch (error) {
-        price.textContent = "—";
-        decision.textContent = "CONNECTION ERROR";
-        decision.className = "decision red";
-        message.textContent = error.message;
-        updated.textContent = "Tidak dapat sambung ke API";
-        updated.className = "status error";
+        ui.price.textContent = "—";
+        ui.decision.textContent = "CONNECTION ERROR";
+        ui.decision.className = "decision red";
+        ui.message.textContent = error.message;
+        ui.updated.textContent = "Tidak dapat sambung ke API";
+        ui.updated.className = "status error";
       }
     }
 
+    renderStats();
     loadSignal();
   </script>
 </body>
